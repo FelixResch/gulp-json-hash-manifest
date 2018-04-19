@@ -15,7 +15,8 @@ function hashmanifest(options) {
         dest: process.cwd(),
         hash: 'sha1',
         filename: 'hash-manifest.json',
-        encoding: 'hex'
+        encoding: 'hex',
+        prependAlgorithm: false
     });
 
     var hashesFilePath = path.resolve(options.dest, options.filename);
@@ -34,7 +35,7 @@ function hashmanifest(options) {
 
         var filePath = path.resolve(options.dest, file.path);
         var relativeFilePath = slash(path.relative(path.dirname(hashesFilePath), filePath));
-        hashes[relativeFilePath] = crypto
+        hashes[relativeFilePath] = (options.prependAlgorithm ? options.hash + '-' : '') + crypto
             .createHash(options.hash)
             .update(file.contents, 'binary')
             .digest(options.encoding);
