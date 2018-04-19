@@ -7,14 +7,15 @@ var mkdirp = require('mkdirp');
 var path = require('path');
 var slash = require('slash');
 var crypto = require('crypto');
-var jsonFile = require('jsonfile')
+var jsonFile = require('jsonfile');
 var through = require('through');
 
 function hashmanifest(options) {
     options = _.defaults(options || {}, {
         dest: process.cwd(),
         hash: 'sha1',
-        filename: 'hash-manifest.json'
+        filename: 'hash-manifest.json',
+        encoding: 'hex'
     });
 
     var hashesFilePath = path.resolve(options.dest, options.filename);
@@ -36,7 +37,7 @@ function hashmanifest(options) {
         hashes[relativeFilePath] = crypto
             .createHash(options.hash)
             .update(file.contents, 'binary')
-            .digest('hex');
+            .digest(options.encoding);
 
         this.push(file);
     }
